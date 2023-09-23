@@ -1,3 +1,6 @@
+import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Write a description of class StatisticsOfAssignment here.
@@ -7,16 +10,14 @@
  */
 public class StatisticsOfAssignment
 {
-    // instance variables - replace the example below with your own
-    private int x;
+   
 
     /**
      * Constructor for objects of class StatisticsOfAssignment
      */
     public StatisticsOfAssignment()
     {
-        // initialise instance variables
-        x = 0;
+      readFromFile(); 
     }
 
     /**
@@ -25,9 +26,18 @@ public class StatisticsOfAssignment
      * @param  y  a sample parameter for a method
      * @return    the sum of x and y
      */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+    public void readFromFile(){
+    try{
+       File myFile = new File("prog5001_students_grade_2022.csv");
+       Scanner myScanner = new Scanner(myFile);
+       while(myScanner.hasNextLine()){
+           String line = myScanner.nextLine();
+           System.out.println(line);
+       }
+       myScanner.close();
+    }catch(IOException e){
+    System.out.println("This is an error");
+    e.printStackTrace();
     }
+}
 }
