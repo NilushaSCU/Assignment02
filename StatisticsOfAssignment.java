@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class StatisticsOfAssignment
+public class StatisticsOfAssignment extends Student
 {
    
 
