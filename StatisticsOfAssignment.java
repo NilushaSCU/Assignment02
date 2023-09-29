@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class StatisticsOfAssignment extends Student
+public class StatisticsOfAssignment 
 {
    
 
@@ -40,4 +40,43 @@ public class StatisticsOfAssignment extends Student
     e.printStackTrace();
     }
 }
+
+    public void printStudentData(){
+    
+    
+    }
+    
+    public void printStudentsBelowThreshold(){
+    
+    
+    }
+    
+    public void printTopStudents(){
+    
+    
+    }
+    public void displayMenu(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Menu");
+        System.out.println("Select a function from the following options:");
+        System.out.println("**********************************************");
+        System.out.println("1.Print Student Data");
+        System.out.println("2.Print students below a threshold");
+        System.out.println("3.Print top 5 students");
+        while (scanner.hasNextLine()){
+            int userChoice = scanner.nextInt();
+            executeOption(userChoice);
+        }
+        scanner.close();
+    }
+    
+    public void executeOption(int userChoice){
+    if (userChoice == 1){
+        printStudentData();
+    }else if (userChoice == 2){
+        printStudentsBelowThreshold();
+    }else if(userChoice == 3){
+        printTopStudents();
+    }
+    }
 }
