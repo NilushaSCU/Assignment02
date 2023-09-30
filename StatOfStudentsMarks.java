@@ -5,9 +5,13 @@ public class StatOfStudentsMarks {
     static String[] values;
     static String unitName;
     static String title;
+    Private String studentList;
   
     public StatOfStudentsMarks() {
-        // Constructor
+        // readFromFile(String[] args);
+       calculateTotalMarks(studentList);
+       printBelowThreshold(assignmentMarksList, scanner, studentList);
+       printTopStudents(studentList);
     }
 
     public static void main(String[] args) throws Exception {
@@ -64,7 +68,13 @@ public class StatOfStudentsMarks {
             System.out.println(lastName +","+ firstName +","+ studentID +","+assignmentMarks +","+ totalMarks);
             
         }
+       System.out.print("Enter the threshold for total marks: ");
+        double threshold = scanner.nextDouble();
+        scanner.nextLine(); // Consume the newline character
+        List<String> studentList = new ArrayList<>();
+        printBelowThreshold(studentList, threshold);  
     }
+   
     
     public static double calculateTotalMarks(List<String>assignmentMarksList){
     double totalMarks = 0.0;
@@ -72,6 +82,78 @@ public class StatOfStudentsMarks {
       totalMarks += Double.parseDouble(mark);  
     }
     return totalMarks;
+}
+
+  public static void printBelowThreshold(List<String> studentList, double threshold) {
+        System.out.println("Students with Total Marks Less Than " + threshold + ":");
+        for (String student : studentList) {
+            String[] studentData = student.split(",");
+            double totalMarks = Double.parseDouble(studentData[4]);
+            System.out.println("Total Marks for " + studentData[1] + " " + studentData[0] + ": " + totalMarks);
+            if (totalMarks < threshold) {
+                System.out.println(student);
+    }
+}
+}
+public static void printTopStudents(List<String> studentList) {
+        // Find the top 5 students with the highest total marks
+        List<String> topStudents = new ArrayList<>();
+        for (String student : studentList) {
+            if (topStudents.isEmpty()) {
+                topStudents.add(student);
+            } else {
+                double totalMarks = Double.parseDouble(student.split(",")[4]);
+                int index = 0;
+                while (index < topStudents.size()) {
+                    double topTotalMarks = Double.parseDouble(topStudents.get(index).split(",")[4]);
+                    if (totalMarks > topTotalMarks) {
+                        break;
+                    }
+                    index++;
+                }
+                if (index < 5) {
+                    topStudents.add(index, student);
+                    if (topStudents.size() > 5) {
+                        topStudents.remove(5);
+                    }
+                }
+            }
+        }
+
+        // Find the bottom 5 students with the lowest total marks
+        List<String> bottomStudents = new ArrayList<>();
+        for (String student : studentList) {
+            if (bottomStudents.isEmpty()) {
+                bottomStudents.add(student);
+            } else {
+                double totalMarks = Double.parseDouble(student.split(",")[4]);
+                int index = 0;
+                while (index < bottomStudents.size()) {
+                    double bottomTotalMarks = Double.parseDouble(bottomStudents.get(index).split(",")[4]);
+                    if (totalMarks < bottomTotalMarks) {
+                        break;
+                    }
+                    index++;
+                }
+                if (index < 5) {
+                    bottomStudents.add(index, student);
+                    if (bottomStudents.size() > 5) {
+                        bottomStudents.remove(5);
+                    }
+                }
+            }
+        }
+
+        // Print the top 5 students with the highest total marks
+        System.out.println("\nTop 5 Students with the Highest Total Marks:");
+        for (String student : topStudents) {
+            System.out.println(student);
+        }
+
+        // Print the bottom 5 students with the lowest total marks
+        System.out.println("\nTop 5 Students with the Lowest Total Marks:");
+        for (String student : bottomStudents) {
+            System.out.println(student);
 }
 }
 
@@ -105,3 +187,5 @@ class Student {
     }
 }
 
+
+}
