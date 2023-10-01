@@ -1,23 +1,21 @@
 import java.util.*;
 import java.io.*;
 
-public class StatOfStudentsMarks {
-    static String[] values;
-    static String unitName;
-    static String title;
-    Private String studentList;
+public class StatOfStudentsMarks{
+    static String[] values;//Assign Array to store values
+    static String unitName; //Assign variable to store unit name
+    static String title;//Assign variable to store title
+    static List<Student> studentList = new ArrayList<>(); //Assign List to store 
   
     public StatOfStudentsMarks() {
-        // readFromFile(String[] args);
-       calculateTotalMarks(studentList);
-       printBelowThreshold(assignmentMarksList, scanner, studentList);
-       printTopStudents(studentList);
+        //Constructor is the initialization of class
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {//main method
         Scanner scanner = new Scanner(System.in);
         String filename;
         
+        //loop to check the validity of the input
         while(true){
         System.out.print("Enter the filename containing student data: ");
         filename = scanner.nextLine();
@@ -34,158 +32,194 @@ public class StatOfStudentsMarks {
             String line;
             while ((line = bufferReader.readLine()) != null) {
                 if (line.trim().startsWith("#")){
-                continue;
+                continue;//skip the lines starting with symbol"#"
             }
-                values = line.split(",");
+                String[] values = line.split(",");
                 records.add(Arrays.asList(values));
             }
         }
         
-        unitName = records.get(0).get(0);
-        String title= records.get(1).toString().replaceAll("\\[|\\]","");
-        System.out.println("File Name: " + filename);
-        System.out.println("unit Name:"+ unitName);
+        unitName = records.get(0).get(0);//extract unit name from the file
+        title= records.get(1).toString().replaceAll("\\[|\\]","");//exact title
+        System.out.println("File Name: " + filename);//display file name
+        System.out.println("unit Name:"+ unitName);//display unit name
         title += ",Total Marks";
-        System.out.println("Title: "+title);
-
+        System.out.println("Title: "+title);//display title with all parts
+        
+        // Read student information and create Student objects
         for (int i = 2; i < records.size(); i++) {
             List<String> studentData = records.get(i);
             String lastName = studentData.get(0);
             String firstName = studentData.get(1);
             String studentID = studentData.get(2);
             
-            List<String>assignmentMarksList = new ArrayList<>();
+            List<Double>assignmentMarksList = new ArrayList<>();
             
             for(int j = 3;j< studentData.size();j++){
               String mark = studentData.get(j).replaceAll("\\[|\\]", "");
                 // If any assignment mark is missing, replace with "0"
                 mark = mark.isEmpty() ? "0" : mark;
-                assignmentMarksList.add(mark);
+                assignmentMarksList.add(Double.parseDouble(mark));
             }  
             
-            String assignmentMarks = String.join(",",assignmentMarksList);
-            double totalMarks = calculateTotalMarks(assignmentMarksList);
-            System.out.println(lastName +","+ firstName +","+ studentID +","+assignmentMarks +","+ totalMarks);
+           double[] assignmentMarks = new double[assignmentMarksList.size()];
+            for (int k = 0; k < assignmentMarksList.size(); k++) {
+                assignmentMarks[k] = assignmentMarksList.get(k);
+            }
             
+            //create new student object and add it to the studentList
+            studentList.add(new Student(firstName, lastName, studentID, assignmentMarks));
         }
-       System.out.print("Enter the threshold for total marks: ");
-        double threshold = scanner.nextDouble();
-        scanner.nextLine(); // Consume the newline character
-        List<String> studentList = new ArrayList<>();
-        printBelowThreshold(studentList, threshold);  
+      
+    
+   //Menu loop
+    while(true){
+    System.out.println("\n***********************Menu*********************");
+    System.out.println("....................................................");
+    System.out.println("1:Print Student Data");
+    System.out.println("2:Print Students Below Threshold Value");
+    System.out.println("3:Print Top Students");
+    System.out.println("4:Exit from program");
+    int choice = scanner.nextInt();
+    scanner.nextLine();
+    
+    switch (choice){
+        case 1:
+            printStudentData();
+            break;
+        case 2:
+            System.out.print("Enter the threshold for total marks: ");
+            double threshold = scanner.nextDouble();
+            scanner.nextLine();
+            printBelowThreshold(threshold);
+            break;
+        case 3:
+            printTopStudents();
+            break;
+        case 4:
+            System.out.println("You have exit successfully from the program.");
+            System.exit(0);
+        default:
+            System.out.println("Invalid choice.Please enter a valid choice: ");
+    }
+    }
+}
+
+//Method to print student data
+public static void printStudentData() {
+        System.out.println("\nStudent Data:");
+        System.out.println(title);
+        System.out.println();//Add an empty line
+
+        for (Student student : studentList) {
+            System.out.print(student.getLastName() + "," + student.getFirstName() + "," + student.getId());
+            double[] assignmentMarks = student.getAssignmentMarks();
+            for (double mark : assignmentMarks) {
+                System.out.print("," + mark);
+            }
+            double totalMarks = calculateTotalMarks(assignmentMarks);
+            System.out.println("," + totalMarks);
+            System.out.println(); // Add an empty line after each student
+        }
     }
    
-    
-    public static double calculateTotalMarks(List<String>assignmentMarksList){
+    //Method to print student list with total below threshold value
+public static void printBelowThreshold( double threshold) {
+        System.out.println("Students with Total Marks Less Than " + threshold + ":");
+        System.out.println();//Add an empty line
+        System.out.println(title);
+        
+for (Student student : studentList) {
+            double totalMarks = calculateTotalMarks(student.getAssignmentMarks());
+            if (totalMarks < threshold) {
+                System.out.print(student.getLastName() + "," + student.getFirstName() + "," + student.getId());
+                double[] assignmentMarks = student.getAssignmentMarks();
+                for (double mark : assignmentMarks) {
+                    System.out.print("," + mark);
+                }
+                System.out.println("," + totalMarks);
+                System.out.println();//Add an empty line
+            }
+        }
+    }
+ 
+    //Method to print top 5 students with highest total and top 5 students with lowest total
+public static void printTopStudents() {
+        System.out.println("\nTop 5 Students with the Highest Total Marks:");
+        System.out.println();//Add an empty line
+        System.out.println(title);
+        
+        List<Student> topStudents = findTopStudents(5);
+
+        for (Student student : topStudents) {
+            System.out.println(student.getLastName() + ", " +student.getFirstName() + ", " +"ID: " + student.getId() + ", " +"Total Marks: " + calculateTotalMarks(student.getAssignmentMarks()));
+            System.out.println();//Add an empty line
+        }
+
+        System.out.println("\nTop 5 Students with the Lowest Total Marks:");
+        System.out.println();//Add an empty line
+        System.out.println(title);
+        
+        List<Student> lowestStudents = findlowestStudents(5);
+
+        for (Student student : lowestStudents) {
+           System.out.println(student.getLastName() + ", " +student.getFirstName() + ", " +"ID: " + student.getId() + ", " +"Total Marks: " + calculateTotalMarks(student.getAssignmentMarks()));
+           System.out.println();//Add an empty line
+        }
+    }
+
+    //method to find and return top students with highest total marks  
+    public static List<Student> findTopStudents(int num) {
+        List<Student> topStudents = new ArrayList<>();
+        for (Student student : studentList) {
+            double totalMarks = calculateTotalMarks(student.getAssignmentMarks());
+
+            if (topStudents.size() < num) {
+                topStudents.add(student);
+                continue;
+            }
+
+            for (int i = 0; i < num; i++) {
+                double existingTotalMarks = calculateTotalMarks(topStudents.get(i).getAssignmentMarks());
+                if (totalMarks > existingTotalMarks) {
+                    topStudents.add(i, student);
+                    topStudents.remove(num);
+                    break;
+                }
+            }
+        }
+        return topStudents;
+    }
+
+    //method to find and return top students with lowest total marks 
+    public static List<Student> findlowestStudents(int num) {
+        List<Student> lowestStudents = new ArrayList<>();
+        for (Student student : studentList) {
+            double totalMarks = calculateTotalMarks(student.getAssignmentMarks());
+
+            if (lowestStudents.size() < num) {
+                lowestStudents.add(student);
+                continue;
+            }
+
+            for (int i = 0; i < num; i++) {
+                double existingTotalMarks = calculateTotalMarks(lowestStudents.get(i).getAssignmentMarks());
+                if (totalMarks < existingTotalMarks) {
+                    lowestStudents.add(i, student);
+                    lowestStudents.remove(num);
+                    break;
+                }
+            }
+        }
+        return lowestStudents;
+    }
+
+    //method to calculate total marks of each student in the file
+    public static double calculateTotalMarks(double[] assignmentMarks){
     double totalMarks = 0.0;
-    for(String mark : assignmentMarksList){
-      totalMarks += Double.parseDouble(mark);  
+    for(double mark : assignmentMarks){
+      totalMarks += mark;  
     }
     return totalMarks;
 }
-
-  public static void printBelowThreshold(List<String> studentList, double threshold) {
-        System.out.println("Students with Total Marks Less Than " + threshold + ":");
-        for (String student : studentList) {
-            String[] studentData = student.split(",");
-            double totalMarks = Double.parseDouble(studentData[4]);
-            System.out.println("Total Marks for " + studentData[1] + " " + studentData[0] + ": " + totalMarks);
-            if (totalMarks < threshold) {
-                System.out.println(student);
-    }
-}
-}
-public static void printTopStudents(List<String> studentList) {
-        // Find the top 5 students with the highest total marks
-        List<String> topStudents = new ArrayList<>();
-        for (String student : studentList) {
-            if (topStudents.isEmpty()) {
-                topStudents.add(student);
-            } else {
-                double totalMarks = Double.parseDouble(student.split(",")[4]);
-                int index = 0;
-                while (index < topStudents.size()) {
-                    double topTotalMarks = Double.parseDouble(topStudents.get(index).split(",")[4]);
-                    if (totalMarks > topTotalMarks) {
-                        break;
-                    }
-                    index++;
-                }
-                if (index < 5) {
-                    topStudents.add(index, student);
-                    if (topStudents.size() > 5) {
-                        topStudents.remove(5);
-                    }
-                }
-            }
-        }
-
-        // Find the bottom 5 students with the lowest total marks
-        List<String> bottomStudents = new ArrayList<>();
-        for (String student : studentList) {
-            if (bottomStudents.isEmpty()) {
-                bottomStudents.add(student);
-            } else {
-                double totalMarks = Double.parseDouble(student.split(",")[4]);
-                int index = 0;
-                while (index < bottomStudents.size()) {
-                    double bottomTotalMarks = Double.parseDouble(bottomStudents.get(index).split(",")[4]);
-                    if (totalMarks < bottomTotalMarks) {
-                        break;
-                    }
-                    index++;
-                }
-                if (index < 5) {
-                    bottomStudents.add(index, student);
-                    if (bottomStudents.size() > 5) {
-                        bottomStudents.remove(5);
-                    }
-                }
-            }
-        }
-
-        // Print the top 5 students with the highest total marks
-        System.out.println("\nTop 5 Students with the Highest Total Marks:");
-        for (String student : topStudents) {
-            System.out.println(student);
-        }
-
-        // Print the bottom 5 students with the lowest total marks
-        System.out.println("\nTop 5 Students with the Lowest Total Marks:");
-        for (String student : bottomStudents) {
-            System.out.println(student);
-}
-}
-
-class Student {
-    private String firstName;
-    private String lastName;
-    private String studentID;
-    private double[] assignmentMarks;
-
-    public Student(String firstName,String lastName, String studentID, double[] assignmentMarks) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.studentID = studentID;
-        this.assignmentMarks = assignmentMarks;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-    
-     public String getLastName() {
-        return firstName;
-    }
-
-    public String getId() {
-        return studentID;
-    }
-
-    public double[] getAssignmentMarks() {
-        return assignmentMarks;
-    }
-}
-
-
 }

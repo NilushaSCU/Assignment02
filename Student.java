@@ -4,21 +4,21 @@ class Student {
     private String studentID;
     private double[] assignmentMarks;
 
-    public Student(String firstName,String lastName, String studentID, double[] assignmentMarks) {
-        this.firstName = firstName;
+    public Student(String lastName,String firstName, String studentID, double[] assignmentMarks) {
         this.lastName = lastName;
+        this.firstName = firstName;
         this.studentID = studentID;
         this.assignmentMarks = assignmentMarks;
     }
 
+     public String getLastName() {
+        return lastName;
+    }
+    
     public String getFirstName() {
         return firstName;
     }
-    
-     public String getLastName() {
-        return firstName;
-    }
-
+        
     public String getId() {
         return studentID;
     }
