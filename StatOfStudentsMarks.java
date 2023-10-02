@@ -59,9 +59,9 @@ public class StatOfStudentsMarks{
         // Read student information and create Student objects
         for (int i = 2; i < records.size(); i++) {
             List<String> studentData = records.get(i);
-            String lastName = studentData.get(0).trim();
-            String firstName = studentData.get(1).trim();
-            String studentID = studentData.get(2).trim();
+            String lastName = studentData.get(0).trim();//assign lastName to 0th index of the studentData array list
+            String firstName = studentData.get(1).trim();//assign firstName to 1st index of the studentData array list
+            String studentID = studentData.get(2).trim();//assign studentID to 2nd index of the studentData array list
             
             List<Double>assignmentMarksList = new ArrayList<>();
             
@@ -69,8 +69,8 @@ public class StatOfStudentsMarks{
     String marks = studentData.get(j).trim();
 
     double mark;
-    if (marks.isEmpty() || marks.equalsIgnoreCase("null")) {
-        mark = 0.0;
+    if (marks.isEmpty() || marks.equalsIgnoreCase("null")) {//check if any value in the list is empty or null
+        mark = 0.0;//assign zero to missing or null value
     } else {
         try {
             mark = Double.parseDouble(marks);
@@ -163,13 +163,13 @@ public static void printBelowThreshold( double threshold) {
         }
     }
  
-    //Method to print top 5 students with highest total and top 5 students with lowest total
+    //Method to print top students with highest total and top students with lowest total
 public static void printTopStudents() {
         System.out.println("\nTop 5 Students with the Highest Total Marks:");
         System.out.println();//Add an empty line
-        System.out.println(title);
+        System.out.println("Last Name,First Name,Student ID,Total Marks");
 
-        List<Student> topStudents = findTopStudents(5);
+        List<Student> topStudents = findTopStudents(5);//method of find top 5 students with highest total
 
         for (Student student : topStudents) {
             System.out.println(student.getLastName() + ", " +student.getFirstName() + ", " +"ID: " + student.getId() + ", " +"Total Marks: " + calculateTotalMarks(student.getAssignmentMarks()));
@@ -178,9 +178,9 @@ public static void printTopStudents() {
 
         System.out.println("\nTop 5 Students with the Lowest Total Marks:");
         System.out.println();//Add an empty line
-        System.out.println(title);
+        System.out.println("Last Name,First Name,Student ID,Total Marks");
         
-        List<Student> lowestStudents = findlowestStudents(5);
+        List<Student> lowestStudents = findlowestStudents(5);//method of find top 5 students with lowest total
 
         for (Student student : lowestStudents) {
            System.out.println(student.getLastName() + ", " +student.getFirstName() + ", " +"ID: " + student.getId() + ", " +"Total Marks: " + calculateTotalMarks(student.getAssignmentMarks()));
