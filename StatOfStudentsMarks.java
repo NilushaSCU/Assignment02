@@ -1,13 +1,23 @@
 import java.util.*;
 import java.io.*;
 
+
+/**This program is designed to read student information from a file,
+ * process the data, and provide options for viewing and analyzing it. 
+ * It handles missing assignment scores by setting them to 0.0 and
+ * offers a user-friendly menu for interacting with the data
+ *
+ * @author Nilusha
+ * @version (2.0) 20/09/2023
+ */
+
 public class StatOfStudentsMarks{
     static String[] values;//Assign Array to store values
     static String unitName; //Assign variable to store unit name
     static String title;//Assign variable to store title
     static List<Student> studentList = new ArrayList<>(); //Assign List to store 
-  
-    public StatOfStudentsMarks() {
+
+ public StatOfStudentsMarks() {
         //Constructor is the initialization of class
     }
 
@@ -39,7 +49,7 @@ public class StatOfStudentsMarks{
             }
         }
         
-        unitName = records.get(0).get(0);//extract unit name from the file
+        unitName = records.get(0).get(0);//extract unit name from the list named records
         title= records.get(1).toString().replaceAll("\\[|\\]","");//exact title
         System.out.println("File Name: " + filename);//display file name
         System.out.println("unit Name:"+ unitName);//display unit name
@@ -49,18 +59,28 @@ public class StatOfStudentsMarks{
         // Read student information and create Student objects
         for (int i = 2; i < records.size(); i++) {
             List<String> studentData = records.get(i);
-            String lastName = studentData.get(0);
-            String firstName = studentData.get(1);
-            String studentID = studentData.get(2);
+            String lastName = studentData.get(0).trim();
+            String firstName = studentData.get(1).trim();
+            String studentID = studentData.get(2).trim();
             
             List<Double>assignmentMarksList = new ArrayList<>();
             
-            for(int j = 3;j< studentData.size();j++){
-              String mark = studentData.get(j).replaceAll("\\[|\\]", "");
-                // If any assignment mark is missing, replace with "0"
-                mark = mark.isEmpty() ? "0" : mark;
-                assignmentMarksList.add(Double.parseDouble(mark));
-            }  
+    for (int j = 3; j < studentData.size(); j++) {
+    String marks = studentData.get(j).trim();
+
+    double mark;
+    if (marks.isEmpty() || marks.equalsIgnoreCase("null")) {
+        mark = 0.0;
+    } else {
+        try {
+            mark = Double.parseDouble(marks);
+        } catch (NumberFormatException e) {
+            mark = 0.0; // Handle cases where parsing as a double fails
+        }
+    }
+
+    assignmentMarksList.add(mark);
+}  
             
            double[] assignmentMarks = new double[assignmentMarksList.size()];
             for (int k = 0; k < assignmentMarksList.size(); k++) {
@@ -126,10 +146,10 @@ public static void printStudentData() {
     //Method to print student list with total below threshold value
 public static void printBelowThreshold( double threshold) {
         System.out.println("Students with Total Marks Less Than " + threshold + ":");
-        System.out.println();//Add an empty line
         System.out.println(title);
+        System.out.println();//Add an empty line
         
-for (Student student : studentList) {
+        for (Student student : studentList) {
             double totalMarks = calculateTotalMarks(student.getAssignmentMarks());
             if (totalMarks < threshold) {
                 System.out.print(student.getLastName() + "," + student.getFirstName() + "," + student.getId());
@@ -148,7 +168,7 @@ public static void printTopStudents() {
         System.out.println("\nTop 5 Students with the Highest Total Marks:");
         System.out.println();//Add an empty line
         System.out.println(title);
-        
+
         List<Student> topStudents = findTopStudents(5);
 
         for (Student student : topStudents) {

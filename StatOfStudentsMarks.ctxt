@@ -1,5 +1,6 @@
 #BlueJ class context
 comment0.target=StatOfStudentsMarks
+comment0.text=This\ program\ is\ designed\ to\ read\ student\ information\ from\ a\ file,\r\n\ process\ the\ data,\ and\ provide\ options\ for\ viewing\ and\ analyzing\ it.\ \r\n\ It\ handles\ missing\ assignment\ scores\ by\ setting\ them\ to\ 0.0\ and\r\n\ offers\ a\ user-friendly\ menu\ for\ interacting\ with\ the\ data\r\n\r\n\ @author\ Nilusha\r\n\ @version\ (2.0)\ 20/09/2023\r\n
 comment1.params=
 comment1.target=StatOfStudentsMarks()
 comment2.params=args
